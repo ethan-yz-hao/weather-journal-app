@@ -25,3 +25,15 @@ const port = 8000;
 const server = app.listen(port, () => {
     console.log(`running on localhost: ${port}`)
 });
+
+// GET route that returns the projectData
+app.get('/all', (req, res) => {
+    res.send(projectData);
+});
+
+// POST route that adds incoming data to projectData
+app.post('/add', (req, res) => {
+    projectData['temp'] = req.body.temperature;
+    projectData['date'] = req.body.date;
+    projectData['user_res'] = res.body.user_response;
+});

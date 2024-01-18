@@ -5,7 +5,7 @@ const apiKey = '188388cac3018bd04ce69ff048bcd813';
 
 // Create a new date instance dynamically with JS
 let d = new Date();
-let newDate = d.getMonth() + '.' + d.getDate() + '.' + d.getFullYear();
+let newDate = (d.getMonth() + 1) + '.' + d.getDate() + '.' + d.getFullYear();
 
 // fetch geo data
 const getGeoData = async (baseURL, zip, apiKey) => {
@@ -28,19 +28,34 @@ const getWeatherData = async (baseURL, lat, lon, apiKey) => {
 }
 
 // post user response
-const postUserData = async ( url = '', data = {})=>{
-    const response = await fetch(url, {
-        method: 'POST',
-        credentials: 'same-origin',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-    });
-
+const postUserData = async (url = '', data = {}) => {
     try {
-        return await response.json();
-    }catch(error) {
+        await fetch(url, {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+    } catch (error) {
+        console.log("error", error);
+    }
+}
+
+// update UI
+const updateUI = async () => {
+    const request = await fetch('/all');
+    try {
+        // Transform into JSON
+        const allData = await request.json()
+        console.log(allData)
+        // Write updated data to DOM elements
+        document.getElementById('temp').innerHTML = Math.round(allData.temp)+ 'degrees';
+        document.getElementById('content').innerHTML = allData.feel;
+        document.getElementById('date').innerHTML =allData.date;
+    }
+    catch(error) {
         console.log("error", error);
     }
 }
@@ -59,13 +74,11 @@ function generate() {
         )
         .then(
             (weatherData) => {
-                const userRes = document.getElementById('feelings').value;
-                return postUserData('/add', {temp: weatherData.main.temp, date: newDate, userRes: userRes})
+                const feel = document.getElementById('feelings').value;
+                postUserData('/add', {temp: weatherData.main.temp, date: newDate, feel: feel});
             }
         )
         .then(
-            (data) => {
-                console.log(data);
-            }
+            updateUI
         )
 }

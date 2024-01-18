@@ -33,8 +33,8 @@ app.get('/all', (req, res) => {
 
 // POST route that adds incoming data to projectData
 app.post('/add', (req, res) => {
-    projectData['temp'] = req.body.temp;
-    projectData['date'] = req.body.date;
-    projectData['userRes'] = req.body.userRes;
-    res.send(projectData);
+    projectData.temp = req.body.temp;
+    projectData.date = req.body.date;
+    projectData.feel = req.body.feel;
+    console.log(projectData)
 });
